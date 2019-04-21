@@ -12,104 +12,10 @@
 # version format
 version: 1.0.{build}-{branch}
 
-branches:
-  # whitelist
-  #only:
-  #  - master
-  #  - production
-
-  # blacklist
-  except:
-    - gh-pages
-
-# Do not build on tags (GitHub and BitBucket)
-skip_tags: true
-
-# Skipping commits with particular message or from specific user
-skip_commits:
-  message: /.*nobuild.*/      # skips any commit containing "nobuild" in the message
-
-# Do not build feature branch with open Pull Requests
-skip_branch_with_pr: true
-
-# Maximum number of concurrent jobs for the project
-max_jobs: 2
-
-#---------------------------------#
-#    environment configuration    #
-#---------------------------------#
-
-# Build worker image (VM template)
-image: Visual Studio 2017
-
-# scripts that are called at very beginning, before repo cloning
-init:
-  - git config --global core.autocrlf input
-
-# clone directory
-clone_folder: c:\projects\myproject
-
-# setting up etc\hosts file
-hosts:
-  queue-server: 127.0.0.1
-  db.server.com: 127.0.0.2
-
-# environment variables
-environment:
-  my_var1: value1
-  my_var2: value2
-  # this is how to set encrypted variable. Go to "Encrypt data" page in account menu to encrypt data.
-  my_secure_var1:
-    secure: FW3tJ3fMncxvs58/ifSP7w==
-
-# environment:
-#  global:
-#    connection_string: server=12;password=13;
-#    service_url: https://127.0.0.1:8090
-#
-#  matrix:
-#  - db: mysql
-#    provider: mysql
-#
-#  - db: mssql
-#    provider: mssql
-#    password:
-#      secure: $#(JFDA)jQ@#$
-
-# this is how to allow failing jobs in the matrix
-matrix:
-  fast_finish: true     # set this flag to immediately finish build once one of the jobs fails.
-  allow_failures:
-    - platform: ARM
-      configuration: Debug
-    - platform: x64
-      configuration: Release
-
-# exclude configuration from the matrix. Works similarly to 'allow_failures' but build not even being started for excluded combination.
-  exclude:
-    - platform: x86
-      configuration: Debug
-
-# scripts that run after cloning repository
-install:
-  # by default, all script lines are interpreted as batch
-  - echo This is batch
-  # to run script as a PowerShell command prepend it with ps:
-  - ps: Write-Host 'This is PowerShell'
-  # batch commands start from cmd:
-  - cmd: echo This is batch again
-  - cmd: set MY_VAR=12345
-
-#---------------------------------#
-#       build configuration       #
-#---------------------------------#
-
 # build platform
 platform:
-  - x86
   - x64
   - ARM
-  - Any CPU
 
 # build Configuration, i.e. Debug, Release, etc.
 configuration: Release
@@ -121,33 +27,7 @@ configuration: Release
 
 build:
   parallel: true                  # enable MSBuild parallel builds
-  project: MyTestAzureCS.sln      # path to Visual Studio solution or project
-  publish_wap: true               # package Web Application Projects (WAP) for Web Deploy
-  publish_wap_xcopy: true         # package Web Application Projects (WAP) for XCopy deployment
-  publish_azure: true             # package Azure Cloud Service projects and push to artifacts
-  publish_nuget: true             # package projects with .nuspec files and push to artifacts
-  publish_nuget_symbols: true     # generate and publish NuGet symbol packages
-  include_nuget_references: true  # add -IncludeReferencedProjects option while packaging NuGet artifacts
-
-  # MSBuild verbosity level
-  verbosity: quiet|minimal|normal|detailed
-
-
-# scripts to run before build
-before_build:
-
-# scripts to run *after* solution is built and *before* automatic packaging occurs (web apps, NuGet packages, Azure Cloud Services)
-before_package:
-
-# scripts to run after build
-after_build:
-
-# to run your custom scripts instead of automatic MSBuild
-build_script:
-
-# to disable automatic builds
-#build: off
-
+  project: Source/dolphin-emu.sln      # path to Visual Studio solution or project
 #---------------------------------#
 #       tests configuration       #
 #---------------------------------#
